@@ -4,10 +4,24 @@
               cppLanguageStandard="17" version="0.5.0" companyName="Sailing To Mars"
               pluginFormats="buildAU,buildVST3" pluginChannelConfigs="{2, 2}">
   <MAINGROUP id="uynNn5" name="Lush Delay">
+    <FILE id="wa8mPu" name="VisualizerCrossFB.svg" compile="0" resource="1"
+          file="Graphics/svg/VisualizerCrossFB.svg"/>
+    <FILE id="hdEM3v" name="VisualizerDirectFB.svg" compile="0" resource="1"
+          file="Graphics/svg/VisualizerDirectFB.svg"/>
+    <FILE id="ytBvW9" name="VisualizerLeft.svg" compile="0" resource="1"
+          file="Graphics/svg/VisualizerLeft.svg"/>
+    <FILE id="QUWBJQ" name="VisualizerRight.svg" compile="0" resource="1"
+          file="Graphics/svg/VisualizerRight.svg"/>
     <FILE id="eZyqGc" name="Montserrat-Regular.ttf" compile="0" resource="1"
           file="Fonts/Montserrat/Montserrat-Regular.ttf"/>
+    <FILE id="Qcm18x" name="Montserrat-Thin.ttf" compile="0" resource="1"
+          file="Fonts/Montserrat/Montserrat-Thin.ttf"/>
+    <FILE id="CK2q2j" name="DancingScript-Regular.ttf" compile="0" resource="1"
+          file="Fonts/Dancing_Script/static/DancingScript-Regular.ttf"/>
     <GROUP id="{2B4E8FFD-DFCE-8FC2-A3CA-16EE9CB6C0AA}" name="GUI">
       <FILE id="dFILSl" name="ControlPanel.h" compile="0" resource="0" file="Source/ControlPanel.h"/>
+      <FILE id="bA79mS" name="DelayVisualizer.h" compile="0" resource="0"
+            file="Source/DelayVisualizer.h"/>
       <FILE id="QuooAH" name="DryWetControl.h" compile="0" resource="0" file="Source/DryWetControl.h"/>
       <FILE id="vGAXa1" name="HeaderPanel.h" compile="0" resource="0" file="Source/HeaderPanel.h"/>
       <FILE id="oWK0Av" name="KnobPair.h" compile="0" resource="0" file="Source/KnobPair.h"/>
@@ -32,10 +46,6 @@
             file="Source/PluginEditor.cpp"/>
       <FILE id="HiKPek" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
     </GROUP>
-    <FILE id="Qcm18x" name="Montserrat-Thin.ttf" compile="0" resource="1"
-          file="Fonts/Montserrat/Montserrat-Thin.ttf"/>
-    <FILE id="CK2q2j" name="DancingScript-Regular.ttf" compile="0" resource="1"
-          file="Fonts/Dancing_Script/static/DancingScript-Regular.ttf"/>
   </MAINGROUP>
   <EXPORTFORMATS>
     <XCODE_MAC targetFolder="Builds/MacOSX">

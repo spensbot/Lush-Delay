@@ -19,10 +19,11 @@ public:
         setColour (TextButton::textColourOnId, colourLight);
         setColour (Label::textColourId, colourLight);
         
-        Typeface::Ptr tface = Typeface::createSystemTypefaceFor(BinaryData::MontserratRegular_ttf, BinaryData::MontserratRegular_ttfSize);
-        Typeface::Ptr titleFace = Typeface::createSystemTypefaceFor(BinaryData::DancingScriptRegular_ttf, BinaryData::DancingScriptRegular_ttfSize);
-        setDefaultSansSerifTypeface (tface);
-        LookAndFeel::getDefaultLookAndFeel().setDefaultSansSerifTypeface(tface);
+        montserrat = Typeface::createSystemTypefaceFor(BinaryData::MontserratRegular_ttf, BinaryData::MontserratRegular_ttfSize);
+        dancingScript = Typeface::createSystemTypefaceFor(BinaryData::DancingScriptRegular_ttf, BinaryData::DancingScriptRegular_ttfSize);
+
+        LookAndFeel::getDefaultLookAndFeel().setDefaultSansSerifTypeface(montserrat);
+        
     }
     
     void drawRotarySlider (Graphics& g, int x, int y, int width, int height, float sliderPos, const float rotaryStartAngle, const float rotaryEndAngle, Slider& slider) override
@@ -69,6 +70,16 @@ public:
             g.drawRoundedRectangle (bounds, cornerSize, 3.0f);
         }
     }
+    
+    Typeface::Ptr getTypefaceForFont (const Font& font) override
+    {
+        if (font.getTypefaceName() == "Dancing Script")
+        {
+            return dancingScript;
+        }
+        
+        return montserrat;
+    }
 
     inline static const Colour
         colourAccent = Colour::fromHSV(2.0f/360.0f, 0.47f, 0.48f, 1.0f),
@@ -82,5 +93,6 @@ public:
     static const int padding = 10;
 
 private:
+    Typeface::Ptr montserrat, dancingScript;
     
 };

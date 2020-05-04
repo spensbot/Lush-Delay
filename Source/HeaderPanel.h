@@ -14,6 +14,7 @@
 #include "Params.h"
 #include "LushLookAndFeel.h"
 #include "DryWetControl.h"
+#include "DelayVisualizer.h"
 
 //==============================================================================
 /*
@@ -26,6 +27,7 @@ public:
     , dryWetControl(s, Params::idDry, Params::idWet)
     {
         addAndMakeVisible(dryWetControl);
+        addAndMakeVisible(delayVisualizer);
         initLabel(titleLabel, "Lush Delay");
     }
 
@@ -44,6 +46,9 @@ public:
         auto topBounds = bounds.removeFromTop(90);
         titleLabel.setBounds(topBounds.removeFromLeft(getWidth() * 0.7f));
         dryWetControl.setBounds(topBounds);
+        
+        bounds.removeFromBottom(30);
+        delayVisualizer.setBounds(bounds.reduced(50, 0));
     }
     
 
@@ -52,12 +57,13 @@ private:
     
     DryWetControl dryWetControl;
     Label titleLabel;
+    DelayVisualizer delayVisualizer;
     
     void initLabel(Label& label, String text) {
         addAndMakeVisible(label);
         label.setText(text, dontSendNotification);
         label.setJustificationType(Justification::centredLeft);
-        label.setFont(Font(50.0f));
+        label.setFont(Font("Dancing Script", 65.0f, Font::plain));
     }
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (HeaderPanel)

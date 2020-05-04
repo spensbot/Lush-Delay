@@ -16,7 +16,7 @@
 //==============================================================================
 /*
 */
-class KnobPair    : public Component
+class KnobPair    : public Component, Slider::Listener
 {
 public:
     KnobPair(AudioProcessorValueTreeState& s, String title, String topParamId, String topName, String bottomParamId, String bottomName)
@@ -33,11 +33,15 @@ public:
         initLabel(bottomLabel, bottomName);
         initLabel(topValue, "");
         initLabel(bottomValue, "");
+        
+        topSlider.addListener(this);
+        bottomSlider.addListener(this);
     }
 
     ~KnobPair()
     {
-        
+        topSlider.removeListener(this);
+        bottomSlider.removeListener(this);
     }
 
     void paint (Graphics& g) override
@@ -52,13 +56,19 @@ public:
         titleLabel.setBounds(bounds.removeFromTop(30));
         
         auto topBounds = bounds.removeFromTop(bounds.getHeight()/2);
-        topSlider.setBounds(topBounds.removeFromLeft(topBounds.getWidth()*2/3));
+        topSlider.setBounds(topBounds.removeFromLeft(topBounds.getWidth()/2));
         topLabel.setBounds(topBounds.removeFromTop(topBounds.getHeight()/2));
         topValue.setBounds(topBounds);
         
-        bottomSlider.setBounds(bounds.removeFromRight(bounds.getWidth()*2/3));
+        bottomSlider.setBounds(bounds.removeFromRight(bounds.getWidth()/2));
         bottomLabel.setBounds(bounds.removeFromTop(bounds.getHeight()/2));
         bottomValue.setBounds(bounds);
+    }
+    
+    void sliderValueChanged (Slider *slider) override {
+        setText(topValue, topSlider.getValue());
+        setText(bottomValue, bottomSlider.getValue());
+        repaint();
     }
 
 private:
@@ -85,6 +95,11 @@ private:
         label.setText(text, dontSendNotification);
         label.setJustificationType(Justification::centred);
         label.setFont(Font(20.0f));
+    }
+    
+    void setText(Label& label, float value) {
+        auto dbString = String::toDecimalStringWithSignificantFigures(value, 2);
+        label.setText(dbString, dontSendNotification);
     }
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (KnobPair)

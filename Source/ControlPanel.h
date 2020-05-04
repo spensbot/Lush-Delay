@@ -58,13 +58,13 @@ public:
         
         auto topBounds = bounds.removeFromTop(pairHeight);
         stereoPair.setBounds(topBounds.removeFromLeft(pairWidth));
-        eqPair.setBounds(topBounds.removeFromRight(pairWidth));
+        feedbackPair.setBounds(topBounds.removeFromRight(pairWidth));
         delaySlider.setBounds(topBounds.reduced(LushLookAndFeel::padding, 0));
         
         bounds.removeFromTop(LushLookAndFeel::padding);
         modulatePair.setBounds(bounds.removeFromLeft(pairWidth));
-        feedbackPair.setBounds(bounds.removeFromRight(pairWidth));
-        diffusePair.setBounds(bounds.reduced(LushLookAndFeel::padding, 0));
+        diffusePair.setBounds(bounds.removeFromRight(pairWidth));
+        eqPair.setBounds(bounds.reduced(LushLookAndFeel::padding, 0));
         
     }
 

@@ -36,10 +36,15 @@ public:
         wetLabel.attachToComponent(&wetSlider, false);
         
         sliderValueChanged(&drySlider);
+        
+        drySlider.addListener(this);
+        wetSlider.addListener(this);
     }
 
     ~DryWetControl()
     {
+        drySlider.removeListener(this);
+        wetSlider.removeListener(this);
     }
 
     void paint (Graphics& g) override
@@ -49,20 +54,22 @@ public:
 
     void resized() override
     {
-        auto labelHeight = 25;
+        auto labelHeight = 20;
         auto bounds = getLocalBounds();
         bounds.removeFromTop(labelHeight);
         auto dryBounds = bounds.removeFromLeft(getWidth()/2);
-        drySlider.setBounds(dryBounds);
-        dryValue.setBounds(dryBounds.removeFromBottom(labelHeight));
         
-        wetSlider.setBounds(bounds);
+        dryValue.setBounds(dryBounds.removeFromBottom(labelHeight));
+        drySlider.setBounds(dryBounds);
+        
         wetValue.setBounds(bounds.removeFromBottom(labelHeight));
+        wetSlider.setBounds(bounds);
     }
     
     void sliderValueChanged (Slider *slider) override {
         setGainText(dryValue, drySlider.getValue());
         setGainText(wetValue, wetSlider.getValue());
+        repaint();
     }
 
 private:

@@ -21,6 +21,7 @@ LushDelayAudioProcessorEditor::LushDelayAudioProcessorEditor (LushDelayAudioProc
     int totalWidth = width;
     if (debug) totalWidth += debugWidth;
     setSize(totalWidth , width / whRatio);
+    setResizeLimits(300, 500, 800, 1080);
     setLookAndFeel(&lushLookAndFeel);
     
     addAndMakeVisible(headerPanel);
