@@ -4,10 +4,13 @@
               cppLanguageStandard="17" version="0.5.0" companyName="Sailing To Mars"
               pluginFormats="buildAU,buildVST3" pluginChannelConfigs="{2, 2}">
   <MAINGROUP id="uynNn5" name="Lush Delay">
+    <FILE id="eZyqGc" name="Montserrat-Regular.ttf" compile="0" resource="1"
+          file="Fonts/Montserrat/Montserrat-Regular.ttf"/>
     <GROUP id="{2B4E8FFD-DFCE-8FC2-A3CA-16EE9CB6C0AA}" name="GUI">
-      <FILE id="PJ2DtR" name="OutputPanel.h" compile="0" resource="0" file="Source/OutputPanel.h"/>
-      <FILE id="dU39jS" name="VoiceEditPanel.h" compile="0" resource="0"
-            file="Source/VoiceEditPanel.h"/>
+      <FILE id="dFILSl" name="ControlPanel.h" compile="0" resource="0" file="Source/ControlPanel.h"/>
+      <FILE id="QuooAH" name="DryWetControl.h" compile="0" resource="0" file="Source/DryWetControl.h"/>
+      <FILE id="vGAXa1" name="HeaderPanel.h" compile="0" resource="0" file="Source/HeaderPanel.h"/>
+      <FILE id="oWK0Av" name="KnobPair.h" compile="0" resource="0" file="Source/KnobPair.h"/>
     </GROUP>
     <GROUP id="{6785F3B1-0EC0-4CA4-D372-30F55E4E18D6}" name="Processing">
       <FILE id="eR6TDr" name="HighLowFilter.h" compile="0" resource="0" file="Source/HighLowFilter.h"/>
@@ -31,6 +34,8 @@
     </GROUP>
     <FILE id="Qcm18x" name="Montserrat-Thin.ttf" compile="0" resource="1"
           file="Fonts/Montserrat/Montserrat-Thin.ttf"/>
+    <FILE id="CK2q2j" name="DancingScript-Regular.ttf" compile="0" resource="1"
+          file="Fonts/Dancing_Script/static/DancingScript-Regular.ttf"/>
   </MAINGROUP>
   <EXPORTFORMATS>
     <XCODE_MAC targetFolder="Builds/MacOSX">

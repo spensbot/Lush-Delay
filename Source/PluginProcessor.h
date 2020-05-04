@@ -56,7 +56,7 @@ public:
     void getStateInformation (MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
     
-    AudioProcessorValueTreeState parameters;
+    AudioProcessorValueTreeState state;
     UndoManager undoManager;
     
 private:

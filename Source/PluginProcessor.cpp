@@ -25,8 +25,8 @@ LushDelayAudioProcessor::LushDelayAudioProcessor()
 #else
     :
 #endif
-parameters (*this, &undoManager, Identifier ("Lush"), Params::createParameterLayout()),
-lushDelayEngine(parameters)
+state (*this, &undoManager, Identifier ("Lush"), Params::createParameterLayout()),
+lushDelayEngine(state)
 {
     
 }

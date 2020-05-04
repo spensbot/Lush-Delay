@@ -28,6 +28,7 @@ public:
     inline static const String idWet = "wet";
     inline static const String idBypass = "bypass";
     inline static const String idDelay = "delay";
+    inline static const String idPan = "pan";
     inline static const String idTaps = "taps";
     inline static const String idSpread = "spread";
     inline static const String idOffsetLR = "offsetLR";
@@ -57,10 +58,11 @@ public:
         auto modRateRange = NormalisableRange<float>(0.0f, 10.0f);
         modRateRange.setSkewForCentre(2.0f);
         
-        params.push_back( std::make_unique<AudioParameterBool>(idDry, "Dry Enabled", true) );
-        params.push_back( std::make_unique<AudioParameterFloat>(idWet, "Wet dB", gainRange, 0.0f) );
+        params.push_back( std::make_unique<AudioParameterFloat>(idDry, "Dry Enabled", gainRange, 0.0f) );
+        params.push_back( std::make_unique<AudioParameterFloat>(idWet, "Wet dB", gainRange, -6.0f) );
         params.push_back( std::make_unique<AudioParameterBool>(idBypass, "Matched Bypass", false) );
         params.push_back( std::make_unique<AudioParameterFloat>(idDelay, "Delay", delayRange, 100.0f) );
+        params.push_back( std::make_unique<AudioParameterFloat>(idPan, "Pan", 0.0f, 1.0f, 0.5f));
         params.push_back( std::make_unique<AudioParameterInt>(idTaps, "Taps", 1, MAX_TAPS, 1) );
         params.push_back( std::make_unique<AudioParameterFloat>(idSpread, "Spread", 0.0f, MAX_SPREAD, MAX_SPREAD/2) );
         params.push_back( std::make_unique<AudioParameterFloat>(idOffsetLR, "L/R Offset", 0.0f, 1.0f, 0.5f ) );

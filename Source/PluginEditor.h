@@ -12,8 +12,8 @@
 
 #include <JuceHeader.h>
 #include "PluginProcessor.h"
-#include "OutputPanel.h"
-#include "VoiceEditPanel.h"
+#include "HeaderPanel.h"
+#include "ControlPanel.h"
 #include "LushLookAndFeel.h"
 
 //==============================================================================
@@ -35,16 +35,18 @@ private:
     // This reference is provided as a quick way for your editor to
     // access the processor object that created it.
     LushDelayAudioProcessor& processor;
-    OutputPanel outputPanel;
-    VoiceEditPanel voiceEditPanel;
+    HeaderPanel headerPanel;
+    ControlPanel controlPanel;
     stm::DebugDisplay debugDisplay;
     stm::DisabledVeil bypassedVeil;
+    const float headerRatio = 0.43f;
+    const float whRatio = 0.59f;
+    const int width = 450;
+    const int debugWidth = 200;
 
     LushLookAndFeel lushLookAndFeel;
     
     const bool debug = true;
-    
-    std::atomic<float>* bypass;
     
     TextButton matchedBypassButton;
     typedef AudioProcessorValueTreeState::ButtonAttachment ButtonAttachment;

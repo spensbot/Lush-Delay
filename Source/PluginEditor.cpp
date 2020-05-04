@@ -15,24 +15,24 @@
 LushDelayAudioProcessorEditor::LushDelayAudioProcessorEditor (LushDelayAudioProcessor& p)
     : AudioProcessorEditor (&p),
     processor (p),
-    outputPanel(p.parameters),
-    voiceEditPanel(p.parameters)
+    headerPanel(p.state),
+    controlPanel(p.state)
 {
-    setSize(600, 400);
+    int totalWidth = width;
+    if (debug) totalWidth += debugWidth;
+    setSize(totalWidth , width / whRatio);
     setLookAndFeel(&lushLookAndFeel);
     
-    addAndMakeVisible(outputPanel);
-    addAndMakeVisible(voiceEditPanel);
+    addAndMakeVisible(headerPanel);
+    addAndMakeVisible(controlPanel);
     addAndMakeVisible(bypassedVeil);
     addAndMakeVisible(debugDisplay);
     
     addAndMakeVisible(matchedBypassButton);
     matchedBypassButton.setButtonText("MATCHED BYPASS");
     matchedBypassButton.setClickingTogglesState(true);
-    matchedBypassButtonAttachment.reset(new ButtonAttachment(p.parameters, Params::idBypass, matchedBypassButton));
+    matchedBypassButtonAttachment.reset(new ButtonAttachment(p.state, Params::idBypass, matchedBypassButton));
     matchedBypassButton.addListener(this);
-    
-    bypass = p.parameters.getRawParameterValue(Params::idBypass);
     
     updateWindow();
 }
@@ -46,27 +46,32 @@ LushDelayAudioProcessorEditor::~LushDelayAudioProcessorEditor()
 //==============================================================================
 void LushDelayAudioProcessorEditor::paint (Graphics& g)
 {
-    
+    g.fillAll(LushLookAndFeel::colourAccent);
 }
 
 void LushDelayAudioProcessorEditor::resized()
 {
     auto bounds = getLocalBounds();
     
+    //Bypass veil
     bypassedVeil.setBounds(bounds);
-    
-    int debugWidth = bounds.getWidth() / 5;
+
+    //Debug display
     if (debug){
         debugDisplay.setBounds(bounds.removeFromLeft(debugWidth));
     }
     
-    int outputPanelWidth = 100;
-    auto outputPanelBounds = bounds.removeFromRight(outputPanelWidth);
-    outputPanel.setBounds(outputPanelBounds);
-    outputPanelBounds.reduce(5, 5);
-    int buttonHeight = 50;
-    matchedBypassButton.setBounds(outputPanelBounds.removeFromBottom(buttonHeight));
-    voiceEditPanel.setBounds(bounds);
+    //Header
+    int headerHeight = headerRatio * bounds.getHeight();
+    auto headerBounds = bounds.removeFromTop(headerHeight);
+    headerPanel.setBounds(headerBounds);
+    
+    //Matched Bypass Button
+    //it needs to be rendered here so it can be rendered on top of the bypass veil
+    matchedBypassButton.setBounds(headerBounds.removeFromBottom(40).reduced(5));
+
+    //Control panel
+    controlPanel.setBounds(bounds);
 }
 
 void LushDelayAudioProcessorEditor::buttonClicked (Button *button)
@@ -79,7 +84,6 @@ void LushDelayAudioProcessorEditor::buttonClicked (Button *button)
 void LushDelayAudioProcessorEditor::updateWindow()
 {
     bool isBypassed = matchedBypassButton.getToggleState();
-    //bool isBypassed = bypass->load() > 0.5f ? true : false;
     
     if (isBypassed) {
         bypassedVeil.setVisible(true);
