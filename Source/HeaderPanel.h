@@ -19,7 +19,7 @@
 //==============================================================================
 /*
 */
-class HeaderPanel    : public Component
+class HeaderPanel    : public Component, public AudioProcessorValueTreeState::Listener
 {
 public:
     HeaderPanel(AudioProcessorValueTreeState& s)

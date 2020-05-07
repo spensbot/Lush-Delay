@@ -33,6 +33,7 @@ lushDelayEngine(state)
 
 LushDelayAudioProcessor::~LushDelayAudioProcessor()
 {
+    
 }
 
 //==============================================================================
@@ -167,15 +168,18 @@ AudioProcessorEditor* LushDelayAudioProcessor::createEditor()
 //==============================================================================
 void LushDelayAudioProcessor::getStateInformation (MemoryBlock& destData)
 {
-    // You should use this method to store your parameters in the memory block.
-    // You could do that either as raw data, or use the XML or ValueTree classes
-    // as intermediaries to make it easy to save and load complex data.
+    auto stateCopy = state.copyState();
+    std::unique_ptr<XmlElement> xml (stateCopy.createXml());
+    copyXmlToBinary (*xml, destData);
 }
 
 void LushDelayAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
-    // You should use this method to restore your parameters from this memory block,
-    // whose contents will have been created by the getStateInformation() call.
+    std::unique_ptr<XmlElement> xmlState (getXmlFromBinary (data, sizeInBytes));
+
+    if (xmlState.get() != nullptr)
+        if (xmlState->hasTagName (state.state.getType()))
+            state.replaceState (ValueTree::fromXml (*xmlState));
 }
 
 //==============================================================================

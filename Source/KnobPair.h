@@ -27,15 +27,28 @@ public:
         initSlider(topSlider, topId, topAttachment);
         initSlider(bottomSlider, bottomId, bottomAttachment);
         
+        titleLabel.setJustificationType(Justification::centred);
         initLabel(titleLabel, title);
-        titleLabel.setFont(Font(26.0f));
+        titleLabel.setFont(Font(24.0f));
+        
         initLabel(topLabel, topName);
-        initLabel(bottomLabel, bottomName);
+        topLabel.setJustificationType(Justification::centredLeft);
+        
         initLabel(topValue, "");
+        topValue.setFont(Font(16.0f));
+        topValue.setJustificationType(Justification::topLeft);
+        
+        initLabel(bottomLabel, bottomName);
+        bottomLabel.setJustificationType(Justification::centredRight);
+        
         initLabel(bottomValue, "");
+        bottomValue.setFont(Font(16.0f));
+        bottomValue.setJustificationType(Justification::topRight);
         
         topSlider.addListener(this);
         bottomSlider.addListener(this);
+        
+        sliderValueChanged(&topSlider);
     }
 
     ~KnobPair()
@@ -93,8 +106,7 @@ private:
     void initLabel(Label& label, String text) {
         addAndMakeVisible(label);
         label.setText(text, dontSendNotification);
-        label.setJustificationType(Justification::centred);
-        label.setFont(Font(20.0f));
+        label.setFont(Font(18.0f));
     }
     
     void setText(Label& label, float value) {

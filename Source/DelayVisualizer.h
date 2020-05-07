@@ -11,6 +11,7 @@
 #pragma once
 
 #include <JuceHeader.h>
+#include "LushLookAndFeel.h"
 
 //==============================================================================
 /*
@@ -30,8 +31,8 @@ public:
         addAndMakeVisible(*left);
         addAndMakeVisible(*right);
         
-        initLabel(leftDelay, "Left");
-        initLabel(rightDelay, "Right");
+        initLabel(leftDelay, "100ms");
+        initLabel(rightDelay, "150ms");
     }
 
     ~DelayVisualizer()
@@ -40,7 +41,9 @@ public:
 
     void paint (Graphics& g) override
     {
-        
+        g.setColour(LushLookAndFeel::colourAccent);
+        g.fillRoundedRectangle(topLabelBounds.toFloat(), 5);
+        g.fillRoundedRectangle(bottomLabelBounds.toFloat(), 5);
     }
 
     void resized() override
@@ -84,8 +87,8 @@ private:
         addAndMakeVisible(label);
         label.setText(text, dontSendNotification);
         label.setJustificationType(Justification::centred);
-        label.setFont(Font(22.0f));
-        label.setColour(Label::backgroundColourId, Colours::black);
+        label.setFont(Font(18.0f));
+        //label.setColour(Label::backgroundColourId, Colours::black);
     }
     
     void updateBounds(){
@@ -104,8 +107,8 @@ private:
             bounds.reduce(0, excessHeight/2);
         }
         
-        int labelHeight = 30;
-        int labelWidth = 100;
+        int labelHeight = 24;
+        int labelWidth = 70;
         int reduceY = height * 0.18 - labelHeight/2;
         int reduceX = (width - labelWidth)/2;
         

@@ -69,6 +69,7 @@ public:
     
     void setDelay(float delay) {
         delaySamples = int(delay * samplesPerMS);
+        updateTaps();
     }
     void setTaps(float nt) {
         numTaps = nt;
@@ -111,7 +112,7 @@ private:
     void updateTaps(){
         float highestPrime = stm::Primes::primes_f[Params::MAX_TAPS - 1];
         float step = 0.0f;
-        if (highestPrime != 0.0f){
+        if (numTaps > 1){
             step = spread / highestPrime;
         }
         

@@ -31,6 +31,8 @@ public:
         initLabel(wetLabel, "Wet");
         initLabel(dryValue, "");
         initLabel(wetValue, "");
+        dryValue.setFont(Font(14.0f));
+        wetValue.setFont(Font(14.0f));
         
         dryLabel.attachToComponent(&drySlider, false);
         wetLabel.attachToComponent(&wetSlider, false);
@@ -91,7 +93,7 @@ private:
         addAndMakeVisible(label);
         label.setText(text, dontSendNotification);
         label.setJustificationType(Justification::centred);
-        label.setFont(Font(18.0f));
+        label.setFont(Font(16.0f));
     }
     void setGainText(Label& label, float db) {
         auto dbString = String::toDecimalStringWithSignificantFigures(db, 2);

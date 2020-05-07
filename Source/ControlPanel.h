@@ -59,7 +59,9 @@ public:
         auto topBounds = bounds.removeFromTop(pairHeight);
         stereoPair.setBounds(topBounds.removeFromLeft(pairWidth));
         feedbackPair.setBounds(topBounds.removeFromRight(pairWidth));
-        delaySlider.setBounds(topBounds.reduced(LushLookAndFeel::padding, 0));
+        topBounds.reduce(LushLookAndFeel::padding, 0);
+        delayLabel.setBounds(topBounds.removeFromTop(35));
+        delaySlider.setBounds(topBounds);
         
         bounds.removeFromTop(LushLookAndFeel::padding);
         modulatePair.setBounds(bounds.removeFromLeft(pairWidth));
@@ -89,7 +91,7 @@ private:
         addAndMakeVisible(label);
         label.setText(text, dontSendNotification);
         label.setJustificationType(Justification::centred);
-        label.setFont(Font(12.0f));
+        label.setFont(Font(26.0f));
     }
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ControlPanel)

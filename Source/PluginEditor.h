@@ -40,8 +40,9 @@ private:
     stm::DebugDisplay debugDisplay;
     stm::DisabledVeil bypassedVeil;
     const float headerRatio = 0.43f;
-    const float whRatio = 0.59f;
-    const int width = 450;
+    const float whRatio = 0.68f;
+    const int height = 600;
+    int width;
     const int debugWidth = 200;
 
     LushLookAndFeel lushLookAndFeel;

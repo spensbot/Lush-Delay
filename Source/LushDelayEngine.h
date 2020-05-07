@@ -65,7 +65,7 @@ public:
     void parameterChanged(const String& parameterID, float newValue ) {
         
         if (parameterID == Params::idDry) {
-            dryWetMix.setDryLinear(newValue);
+            dryWetMix.setDryDecibels(newValue);
         } else if (parameterID == Params::idWet) {
             dryWetMix.setWetDecibels(newValue);
         } else if (parameterID == Params::idBypass) {
