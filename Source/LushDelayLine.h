@@ -63,7 +63,7 @@ public:
         delayLine.reset();
     }
     
-    void parameterChanged(const String& parameterID, float newValue ) {
+    void parameterChanged(const String& parameterID, float newValue ) override {
         stm::DebugDisplay::set(10, parameterID + ": " + String(newValue));
         
         if (parameterID == Params::idModDepth) {

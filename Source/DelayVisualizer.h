@@ -12,31 +12,44 @@
 
 #include <JuceHeader.h>
 #include "LushLookAndFeel.h"
+#include "Params.h"
 
 //==============================================================================
 /*
 */
-class DelayVisualizer    : public Component
+class DelayVisualizer    : public Component, public stm::ParameterAttachment::Listener
 {
 public:
-    DelayVisualizer()
+    DelayVisualizer(AudioProcessorValueTreeState& s)
+        : crossFBAttachment(s, Params::idFeedbackCross)
+        , directFBAttachment(s, Params::idFeedbackDirect)
+        , delayAttachment(s, Params::idDelay)
+        , offsetAttachment(s, Params::idOffsetLR)
+        , panAttachment(s, Params::idPan)
     {
-        crossFB = Drawable::createFromImageData(BinaryData::VisualizerCrossFB_svg, BinaryData::VisualizerCrossFB_svgSize);
-        directFB = Drawable::createFromImageData(BinaryData::VisualizerDirectFB_svg, BinaryData::VisualizerDirectFB_svgSize);
-        left = Drawable::createFromImageData(BinaryData::VisualizerLeft_svg, BinaryData::VisualizerLeft_svgSize);
-        right = Drawable::createFromImageData(BinaryData::VisualizerRight_svg, BinaryData::VisualizerRight_svgSize);
-
-        addAndMakeVisible(*crossFB);
-        addAndMakeVisible(*directFB);
-        addAndMakeVisible(*left);
-        addAndMakeVisible(*right);
+        crossFBAttachment.setListener(this);
+        directFBAttachment.setListener(this);
+        delayAttachment.setListener(this);
+        offsetAttachment.setListener(this);
+        panAttachment.setListener(this);
         
-        initLabel(leftDelay, "100ms");
-        initLabel(rightDelay, "150ms");
+        crossFBsvg = Drawable::createFromImageData(BinaryData::VisualizerCrossFB_svg, BinaryData::VisualizerCrossFB_svgSize);
+        directFBsvg = Drawable::createFromImageData(BinaryData::VisualizerDirectFB_svg, BinaryData::VisualizerDirectFB_svgSize);
+        leftsvg = Drawable::createFromImageData(BinaryData::VisualizerLeft_svg, BinaryData::VisualizerLeft_svgSize);
+        rightsvg = Drawable::createFromImageData(BinaryData::VisualizerRight_svg, BinaryData::VisualizerRight_svgSize);
+
+        addAndMakeVisible(*crossFBsvg);
+        addAndMakeVisible(*directFBsvg);
+        addAndMakeVisible(*leftsvg);
+        addAndMakeVisible(*rightsvg);
+        
+        initLabel(leftDelayLabel, "");
+        initLabel(rightDelayLabel, "");
     }
 
     ~DelayVisualizer()
     {
+        
     }
 
     void paint (Graphics& g) override
@@ -52,40 +65,44 @@ public:
         
         auto boundsF = bounds.toFloat();
         
-        crossFB->setTransformToFit (boundsF, RectanglePlacement::stretchToFit);
-        directFB->setTransformToFit (boundsF, RectanglePlacement::stretchToFit);
-        left->setTransformToFit (boundsF, RectanglePlacement::stretchToFit);
-        right->setTransformToFit (boundsF, RectanglePlacement::stretchToFit);
+        crossFBsvg->setTransformToFit (boundsF, RectanglePlacement::stretchToFit);
+        directFBsvg->setTransformToFit (boundsF, RectanglePlacement::stretchToFit);
+        leftsvg->setTransformToFit (boundsF, RectanglePlacement::stretchToFit);
+        rightsvg->setTransformToFit (boundsF, RectanglePlacement::stretchToFit);
         
-        leftDelay.setBounds(topLabelBounds);
-        rightDelay.setBounds(bottomLabelBounds);
+        leftDelayLabel.setBounds(topLabelBounds);
+        rightDelayLabel.setBounds(bottomLabelBounds);
     }
     
-    void setCrossFB(float cfb){
+    void valueUpdated(stm::ParameterAttachment* attachment, float newValue) override {
+        if (attachment == &crossFBAttachment) {
+            crossFB = newValue;
+        } else if (attachment == &directFBAttachment) {
+            directFB = newValue;
+        } else if (attachment == &delayAttachment) {
+            delay = newValue;
+        } else if (attachment == &offsetAttachment) {
+            offset = newValue;
+        } else if (attachment == &panAttachment) {
+            pan = newValue;
+        }
         
-    }
-    void setDirectFB(float dfb){
-        
-    }
-    void setPan(float p){
-        
-    }
-    void setDelay(float d){
-        
-    }
-    void setOffsetLR(float o){
-        
+        updateComponents();
     }
 
 private:
-    std::unique_ptr<Drawable> crossFB, directFB, left, right;
-    Label leftDelay, rightDelay;
+    std::unique_ptr<Drawable> crossFBsvg, directFBsvg, leftsvg, rightsvg;
+    Label leftDelayLabel, rightDelayLabel;
     float whRatio = 400.0f / 160.0f;
     Rectangle<int> bounds, topLabelBounds, bottomLabelBounds;
     
+    Colour crossFBColour = Colours::white, directFBColour = Colours::white, leftColour = Colours::white, rightColour = Colours::white;
+    float crossFB, directFB, delay, offset, pan;
+    stm::ParameterAttachment crossFBAttachment, directFBAttachment, delayAttachment, offsetAttachment, panAttachment;
+    
     void initLabel(Label& label, String text) {
         addAndMakeVisible(label);
-        label.setText(text, dontSendNotification);
+        //label.setText(text, dontSendNotification);
         label.setJustificationType(Justification::centred);
         label.setFont(Font(18.0f));
         //label.setColour(Label::backgroundColourId, Colours::black);
@@ -115,6 +132,37 @@ private:
         auto labelBounds = bounds.reduced(reduceX, reduceY);
         topLabelBounds = labelBounds.removeFromTop(labelHeight);
         bottomLabelBounds = labelBounds.removeFromBottom(labelHeight);
+    }
+    
+    void updateComponents(){
+        //------     UPDATE LABELS     -----------
+        float leftDelay = delay;
+        float rightDelay = delay;
+        
+        if ( offset < 0.5f ){
+            float leftRatio = 1.0f - offset * 2.0f;
+            leftDelay *= (1.0f + leftRatio);
+        } else {
+            float rightRatio = ( offset-0.5f ) * 2.0f;
+            rightDelay *= (1.0f + rightRatio);
+        }
+        
+        leftDelayLabel.setText(String::toDecimalStringWithSignificantFigures (leftDelay, 2) + "ms", dontSendNotification);
+        rightDelayLabel.setText(String::toDecimalStringWithSignificantFigures (rightDelay, 2) + "ms", dontSendNotification);
+        
+        //-------     UPDATE SVGs     ------------
+        auto balance = stm::Balancer::getLinearCentered(pan);
+        crossFBsvg->replaceColour(crossFBColour, crossFBColour.withAlpha(crossFB));
+        crossFBColour = crossFBColour.withAlpha(crossFB);
+        directFBsvg->replaceColour(directFBColour, directFBColour.withAlpha(directFB));
+        directFBColour = directFBColour.withAlpha(directFB);
+        leftsvg->replaceColour(leftColour, rightColour.withAlpha(balance.left));
+        leftColour = rightColour.withAlpha(balance.left);
+        rightsvg->replaceColour(rightColour, rightColour.withAlpha(balance.right));
+        rightColour = rightColour.withAlpha(balance.right);
+        
+        //-------------
+        repaint();
     }
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (DelayVisualizer)

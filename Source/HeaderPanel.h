@@ -24,7 +24,8 @@ class HeaderPanel    : public Component, public AudioProcessorValueTreeState::Li
 public:
     HeaderPanel(AudioProcessorValueTreeState& s)
         : state(s)
-    , dryWetControl(s, Params::idDry, Params::idWet)
+        , delayVisualizer(s)
+        , dryWetControl(s, Params::idDry, Params::idWet)
     {
         addAndMakeVisible(dryWetControl);
         addAndMakeVisible(delayVisualizer);
@@ -51,13 +52,27 @@ public:
         delayVisualizer.setBounds(bounds.reduced(50, 0));
     }
     
+    void parameterChanged(const String& parameterID, float newValue ) override {
+        stm::DebugDisplay::set(10, parameterID + ": " + String(newValue));
+        
+        if (parameterID == Params::idDelay) {
+            
+        } else if (parameterID == Params::idOffsetLR) {
+            
+        } else if (parameterID == Params::idFeedbackDirect) {
+            
+        }  else if (parameterID == Params::idFeedbackCross) {
+            
+        }
+    }
+    
 
 private:
     AudioProcessorValueTreeState& state;
     
+    DelayVisualizer delayVisualizer;
     DryWetControl dryWetControl;
     Label titleLabel;
-    DelayVisualizer delayVisualizer;
     
     void initLabel(Label& label, String text) {
         addAndMakeVisible(label);
