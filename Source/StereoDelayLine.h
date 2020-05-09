@@ -69,53 +69,63 @@ public:
     
     void setDelay(float d) {
         delay = d;
-        delaySamples = int(delay * samplesPerMS);
-        updateTaps();
+        updateDelays();
     }
     void setTaps(float nt) {
         numTaps = nt;
-        updateTaps();
+        updateDelays();
     }
     void setSpread(float s) {
-        spread = s * delay * samplesPerMS;
-        updateTaps();
+        spread = s;
+        updateDelays();
     }
-    void setOffset(float offset){
-        auto balance = stm::Balancer::getLinearCentered(offset);
-//        auto balance = stm::Balancer::getSinCentered(offset);
-        float maxOffsetSamples = Params::MAX_OFFSET * float(delaySamples);
-        offsetSamplesL = int(maxOffsetSamples * (1.0f - balance.left));
-        offsetSamplesR = int(maxOffsetSamples * (1.0f - balance.right));
+    void setOffset(float o){
+        offset = o;
+        updateDelays();
     }
+
     void setFBdirect(float fbd){fbDirect = fbd;}
     void setFBcross(float fbc){fbCross = fbc;}
 
 private:
+    float delay = 0.0f; //ms
+    float offset = 0.0f; //percent delay
+    float spread = 0.0f; //ms
     int numTaps = 1;
-    float spread = 0.0f; //Spread is stored in terms of samples
-    int taps[Params::MAX_TAPS];
-    float delay = 0.0f;
+    float fbDirect = 0.0f;
+    float fbCross = 0.0f;
+    
     int delaySamples = 1;
     int offsetSamplesL = 0;
     int offsetSamplesR = 0;
-    float fbDirect = 0.0f;
-    float fbCross = 0.0f;
+    int taps[Params::MAX_TAPS];
     
     stm::RecircBuffer bufferL, bufferR;
     
     double samplesPerMS = 0.0;
     
+    void updateDelays(){
+        delaySamples = int(delay * samplesPerMS);
+        
+        auto balance = stm::Balancer::getLinearCentered(offset);
+        float maxOffsetSamples = Params::MAX_OFFSET * float(delaySamples);
+        offsetSamplesL = int(maxOffsetSamples * (1.0f - balance.left));
+        offsetSamplesR = int(maxOffsetSamples * (1.0f - balance.right));
+        
+        updateTaps();
+    }
+    
     void updateTaps(){
-        float highestPrime = stm::Primes::primes_f[Params::MAX_TAPS - 1];
-        float step = 0.0f;
+        float highestPrime = stm::Primes::primes_f[numTaps - 1];
+        float stepSamples = 0.0f;
         if (numTaps > 1){
-            step = spread / highestPrime;
+            stepSamples = spread * samplesPerMS / highestPrime;
         }
         
         for (auto i = 0 ; i < Params::MAX_TAPS ; i++)
         {
             float currentPrime = stm::Primes::primes_f[i];
-            taps[i] = int(currentPrime * step);
+            taps[i] = int(currentPrime * stepSamples);
         }
     }
 };

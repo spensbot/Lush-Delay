@@ -16,13 +16,13 @@ class Params
 public:
     constexpr static const float MAX_DELAY = 1000.0f; //ms
     constexpr static const float MAX_MOD = 1.0f; //ms
-    constexpr static const float MAX_SPREAD = 1.0f; //ratio of delay
+    constexpr static const float MAX_SPREAD = 300.0f; //ms
     constexpr static const float MAX_OFFSET = 1.0f; //ratio of delay
     constexpr static const int MAX_TAPS = 10;
     constexpr static const float MIN_DELAY = MAX_MOD;
     // MAX_BUFFER represents the maximum amount of time (in ms) that a delay buffer must
     // hold in order to satisfy all possible parameter combinations.
-    constexpr static const float MAX_BUFFER = (MAX_DELAY * (1.0f + MAX_OFFSET)) * (1.0f + MAX_SPREAD);
+    constexpr static const float MAX_BUFFER = MAX_DELAY * (1.0f + MAX_OFFSET) + MAX_SPREAD;
     
     inline static const String idDry = "dry";
     inline static const String idWet = "wet";
@@ -58,13 +58,16 @@ public:
         auto modRateRange = NormalisableRange<float>(0.0f, 10.0f);
         modRateRange.setSkewForCentre(2.0f);
         
+        auto spreadRange = NormalisableRange<float>(0.0f, 300.0f);
+        spreadRange.setSkewForCentre(50.0f);
+        
         params.push_back( std::make_unique<AudioParameterFloat>(idDry, "Dry Enabled", gainRange, 0.0f) );
         params.push_back( std::make_unique<AudioParameterFloat>(idWet, "Wet dB", gainRange, -6.0f) );
         params.push_back( std::make_unique<AudioParameterBool>(idBypass, "Matched Bypass", false) );
         params.push_back( std::make_unique<AudioParameterFloat>(idDelay, "Delay", delayRange, 100.0f) );
         params.push_back( std::make_unique<AudioParameterFloat>(idPan, "Pan", 0.0f, 1.0f, 0.5f));
         params.push_back( std::make_unique<AudioParameterInt>(idTaps, "Taps", 1, MAX_TAPS, 1) );
-        params.push_back( std::make_unique<AudioParameterFloat>(idSpread, "Spread", 0.0f, MAX_SPREAD, MAX_SPREAD/2) );
+        params.push_back( std::make_unique<AudioParameterFloat>(idSpread, "Spread", spreadRange, 50.0f) );
         params.push_back( std::make_unique<AudioParameterFloat>(idOffsetLR, "L/R Offset", 0.0f, 1.0f, 0.5f ) );
         params.push_back( std::make_unique<AudioParameterBool>(idAllpass, "Allpass", false) );
         params.push_back( std::make_unique<AudioParameterFloat>(idFeedbackDirect, "Direct Feedback", 0.0f, 1.0f, 0.0f) );
