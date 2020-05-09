@@ -25,6 +25,7 @@
       <FILE id="QuooAH" name="DryWetControl.h" compile="0" resource="0" file="Source/DryWetControl.h"/>
       <FILE id="vGAXa1" name="HeaderPanel.h" compile="0" resource="0" file="Source/HeaderPanel.h"/>
       <FILE id="oWK0Av" name="KnobPair.h" compile="0" resource="0" file="Source/KnobPair.h"/>
+      <FILE id="L16HoX" name="SliderPair.h" compile="0" resource="0" file="Source/SliderPair.h"/>
     </GROUP>
     <GROUP id="{6785F3B1-0EC0-4CA4-D372-30F55E4E18D6}" name="Processing">
       <FILE id="eR6TDr" name="HighLowFilter.h" compile="0" resource="0" file="Source/HighLowFilter.h"/>

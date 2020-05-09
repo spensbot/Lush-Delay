@@ -43,8 +43,8 @@ public:
         addAndMakeVisible(*leftsvg);
         addAndMakeVisible(*rightsvg);
         
-        initLabel(leftDelayLabel, "");
-        initLabel(rightDelayLabel, "");
+//        initLabel(leftDelayLabel, "");
+//        initLabel(rightDelayLabel, "");
     }
 
     ~DelayVisualizer()
@@ -54,9 +54,17 @@ public:
 
     void paint (Graphics& g) override
     {
+        
+    }
+    
+    void paintOverChildren(Graphics& g) override
+    {
         g.setColour(LushLookAndFeel::colourAccent);
         g.fillRoundedRectangle(topLabelBounds.toFloat(), 5);
         g.fillRoundedRectangle(bottomLabelBounds.toFloat(), 5);
+        g.setColour(LushLookAndFeel::colourLight);
+        g.drawFittedText(leftDelayText, topLabelBounds, Justification::centred, 1);
+        g.drawFittedText(rightDelayText, bottomLabelBounds, Justification::centred, 1);
     }
 
     void resized() override
@@ -70,8 +78,8 @@ public:
         leftsvg->setTransformToFit (boundsF, RectanglePlacement::stretchToFit);
         rightsvg->setTransformToFit (boundsF, RectanglePlacement::stretchToFit);
         
-        leftDelayLabel.setBounds(topLabelBounds);
-        rightDelayLabel.setBounds(bottomLabelBounds);
+//        leftDelayLabel.setBounds(topLabelBounds);
+//        rightDelayLabel.setBounds(bottomLabelBounds);
     }
     
     void valueUpdated(stm::ParameterAttachment* attachment, float newValue) override {
@@ -92,21 +100,22 @@ public:
 
 private:
     std::unique_ptr<Drawable> crossFBsvg, directFBsvg, leftsvg, rightsvg;
-    Label leftDelayLabel, rightDelayLabel;
+    //Label leftDelayLabel, rightDelayLabel;
+    String leftDelayText, rightDelayText;
     float whRatio = 400.0f / 160.0f;
     Rectangle<int> bounds, topLabelBounds, bottomLabelBounds;
     
     Colour crossFBColour = Colours::white, directFBColour = Colours::white, leftColour = Colours::white, rightColour = Colours::white;
-    float crossFB, directFB, delay, offset, pan;
+    float crossFB = 0.0f, directFB = 0.0f, delay = 0.0f, offset = 0.5f, pan = 0.5f;
     stm::ParameterAttachment crossFBAttachment, directFBAttachment, delayAttachment, offsetAttachment, panAttachment;
     
-    void initLabel(Label& label, String text) {
-        addAndMakeVisible(label);
-        //label.setText(text, dontSendNotification);
-        label.setJustificationType(Justification::centred);
-        label.setFont(Font(18.0f));
-        //label.setColour(Label::backgroundColourId, Colours::black);
-    }
+//    void initLabel(Label& label, String text) {
+//        addAndMakeVisible(label);
+//        //label.setText(text, dontSendNotification);
+//        label.setJustificationType(Justification::centred);
+//        label.setFont(Font(18.0f));
+//        //label.setColour(Label::backgroundColourId, Colours::black);
+//    }
     
     void updateBounds(){
         bounds = getLocalBounds();
@@ -139,19 +148,26 @@ private:
         float leftDelay = delay;
         float rightDelay = delay;
         
-        if ( offset < 0.5f ){
-            float leftRatio = 1.0f - offset * 2.0f;
-            leftDelay *= (1.0f + leftRatio);
-        } else {
-            float rightRatio = ( offset-0.5f ) * 2.0f;
-            rightDelay *= (1.0f + rightRatio);
-        }
+        auto balance = stm::Balancer::getLinearCentered(offset);
+        leftDelay *= 2.0f - balance.left;
+        rightDelay *= 2.0f - balance.right;
         
-        leftDelayLabel.setText(String::toDecimalStringWithSignificantFigures (leftDelay, 2) + "ms", dontSendNotification);
-        rightDelayLabel.setText(String::toDecimalStringWithSignificantFigures (rightDelay, 2) + "ms", dontSendNotification);
+//        if ( offset < 0.5f ){
+//            float leftRatio = 1.0f - offset * 2.0f;
+//            leftDelay *= (1.0f + leftRatio);
+//        } else {
+//            float rightRatio = ( offset-0.5f ) * 2.0f;
+//            rightDelay *= (1.0f + rightRatio);
+//        }
+        
+        leftDelayText = String::toDecimalStringWithSignificantFigures (leftDelay, 2) + "ms";
+        rightDelayText = String::toDecimalStringWithSignificantFigures (rightDelay, 2) + "ms";
+        
+//        leftDelayLabel.setText(String::toDecimalStringWithSignificantFigures (leftDelay, 2) + "ms", dontSendNotification);
+//        rightDelayLabel.setText(String::toDecimalStringWithSignificantFigures (rightDelay, 2) + "ms", dontSendNotification);
         
         //-------     UPDATE SVGs     ------------
-        auto balance = stm::Balancer::getLinearCentered(pan);
+        balance = stm::Balancer::getLinearCentered(pan);
         crossFBsvg->replaceColour(crossFBColour, crossFBColour.withAlpha(crossFB));
         crossFBColour = crossFBColour.withAlpha(crossFB);
         directFBsvg->replaceColour(directFBColour, directFBColour.withAlpha(directFB));

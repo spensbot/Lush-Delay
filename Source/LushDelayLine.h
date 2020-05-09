@@ -28,6 +28,7 @@ public:
         state.addParameterListener(Params::idFeedbackCross, this);
         state.addParameterListener(Params::idLowPass, this);
         state.addParameterListener(Params::idHighPass, this);
+        state.addParameterListener(Params::idPan, this);
     }
     
     ~LushDelayLine() {
@@ -41,17 +42,20 @@ public:
         state.removeParameterListener(Params::idFeedbackCross, this);
         state.removeParameterListener(Params::idLowPass, this);
         state.removeParameterListener(Params::idHighPass, this);
+        state.removeParameterListener(Params::idPan, this);
     }
     
     void prepare(const dsp::ProcessSpec& spec) {
         modulator.prepare(spec, Params::MAX_MOD);
         highLowFilter.prepare(spec);
         delayLine.prepare(spec);
+        panner.prepare();
         
         updateParameters();
     }
     
     void process(dsp::AudioBlock<float>& processBlock) {
+        panner.process(processBlock);
         highLowFilter.process(processBlock);
         modulator.process(processBlock);
         delayLine.process(processBlock);
@@ -61,6 +65,7 @@ public:
         highLowFilter.reset();
         modulator.reset();
         delayLine.reset();
+        panner.reset();
     }
     
     void parameterChanged(const String& parameterID, float newValue ) override {
@@ -86,11 +91,16 @@ public:
             highLowFilter.setLowPassFreq(newValue);
         } else if (parameterID == Params::idHighPass){
             highLowFilter.setHiPassFreq(newValue);
+        } else if (parameterID == Params::idPan){
+            //panner.setSinCentered(newValue);
+            panner.setLinearCentered(newValue);
         }
     }
     
 private:
     AudioProcessorValueTreeState& state;
+    //stm::BalancePanner panner;
+    stm::StereoPanner panner;
     stm::FrequencyModulator modulator;
     StereoDelayLine delayLine;
     HighLowFilter highLowFilter;

@@ -67,7 +67,8 @@ public:
         bufferR.reset();
     }
     
-    void setDelay(float delay) {
+    void setDelay(float d) {
+        delay = d;
         delaySamples = int(delay * samplesPerMS);
         updateTaps();
     }
@@ -76,29 +77,24 @@ public:
         updateTaps();
     }
     void setSpread(float s) {
-        spread = s;
+        spread = s * delay * samplesPerMS;
         updateTaps();
     }
     void setOffset(float offset){
-        if (offset < 0.5) {
-            float amount = 1.0f - offset * 2.0f;
-            float samples = Params::MAX_SPREAD * amount * delaySamples;
-            offsetSamplesR = 0;
-            offsetSamplesL = (int) samples;
-        } else {
-            float amount = (offset - 0.5f) * 2.0f;
-            float samples = Params::MAX_SPREAD * amount * delaySamples;
-            offsetSamplesL = 0;
-            offsetSamplesR = (int) samples;
-        }
+        auto balance = stm::Balancer::getLinearCentered(offset);
+//        auto balance = stm::Balancer::getSinCentered(offset);
+        float maxOffsetSamples = Params::MAX_OFFSET * float(delaySamples);
+        offsetSamplesL = int(maxOffsetSamples * (1.0f - balance.left));
+        offsetSamplesR = int(maxOffsetSamples * (1.0f - balance.right));
     }
     void setFBdirect(float fbd){fbDirect = fbd;}
     void setFBcross(float fbc){fbCross = fbc;}
 
 private:
     int numTaps = 1;
-    float spread = 0.0f;
+    float spread = 0.0f; //Spread is stored in terms of samples
     int taps[Params::MAX_TAPS];
+    float delay = 0.0f;
     int delaySamples = 1;
     int offsetSamplesL = 0;
     int offsetSamplesR = 0;
@@ -123,3 +119,7 @@ private:
         }
     }
 };
+
+
+
+

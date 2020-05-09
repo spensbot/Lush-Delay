@@ -16,7 +16,7 @@ class Params
 public:
     constexpr static const float MAX_DELAY = 1000.0f; //ms
     constexpr static const float MAX_MOD = 1.0f; //ms
-    constexpr static const float MAX_SPREAD = 0.1f; //ratio of delay
+    constexpr static const float MAX_SPREAD = 1.0f; //ratio of delay
     constexpr static const float MAX_OFFSET = 1.0f; //ratio of delay
     constexpr static const int MAX_TAPS = 10;
     constexpr static const float MIN_DELAY = MAX_MOD;
