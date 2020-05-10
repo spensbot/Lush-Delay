@@ -65,6 +65,7 @@ public:
         g.setColour(LushLookAndFeel::colourLight);
         g.drawFittedText(leftDelayText, topLabelBounds, Justification::centred, 1);
         g.drawFittedText(rightDelayText, bottomLabelBounds, Justification::centred, 1);
+        
     }
 
     void resized() override
@@ -119,23 +120,28 @@ private:
     
     void updateBounds(){
         bounds = getLocalBounds();
-        int height = bounds.getHeight();
-        int width = bounds.getWidth();
-        if (width / height > whRatio){
+        int height = getHeight();
+        int width = getWidth();
+        if ((float)width / (float)height > whRatio){
             //too much width
-            int width = height * whRatio;
+            width = height * whRatio;
             int excessWidth = bounds.getWidth() - width;
             bounds.reduce(excessWidth/2, 0);
         } else {
             //too much height
-            int height = width / whRatio;
+            height = width / whRatio;
             int excessHeight = bounds.getHeight() - height;
             bounds.reduce(0, excessHeight/2);
         }
         
+        stm::DebugDisplay::set(1, "height: " + String(height));
+        stm::DebugDisplay::set(2, "getHeight: " + String(getHeight()));
+        stm::DebugDisplay::set(3, "width: " + String(width));
+        stm::DebugDisplay::set(4, "getWidth: " + String(getWidth()));
+        
         int labelHeight = 24;
         int labelWidth = 70;
-        int reduceY = height * 0.18 - labelHeight/2;
+        int reduceY = height * 0.24 - labelHeight/2;
         int reduceX = (width - labelWidth)/2;
         
         auto labelBounds = bounds.reduced(reduceX, reduceY);

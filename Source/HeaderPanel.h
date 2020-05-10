@@ -19,7 +19,7 @@
 //==============================================================================
 /*
 */
-class HeaderPanel    : public Component, public AudioProcessorValueTreeState::Listener
+class HeaderPanel    : public Component
 {
 public:
     HeaderPanel(AudioProcessorValueTreeState& s)
@@ -51,21 +51,6 @@ public:
         bounds.removeFromBottom(30);
         delayVisualizer.setBounds(bounds.reduced(50, 0));
     }
-    
-    void parameterChanged(const String& parameterID, float newValue ) override {
-        stm::DebugDisplay::set(10, parameterID + ": " + String(newValue));
-        
-        if (parameterID == Params::idDelay) {
-            
-        } else if (parameterID == Params::idOffsetLR) {
-            
-        } else if (parameterID == Params::idFeedbackDirect) {
-            
-        }  else if (parameterID == Params::idFeedbackCross) {
-            
-        }
-    }
-    
 
 private:
     AudioProcessorValueTreeState& state;
