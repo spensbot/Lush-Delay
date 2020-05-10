@@ -43,8 +43,7 @@ public:
         addAndMakeVisible(*leftsvg);
         addAndMakeVisible(*rightsvg);
         
-//        initLabel(leftDelayLabel, "");
-//        initLabel(rightDelayLabel, "");
+        updateComponents();
     }
 
     ~DelayVisualizer()
@@ -78,24 +77,9 @@ public:
         directFBsvg->setTransformToFit (boundsF, RectanglePlacement::stretchToFit);
         leftsvg->setTransformToFit (boundsF, RectanglePlacement::stretchToFit);
         rightsvg->setTransformToFit (boundsF, RectanglePlacement::stretchToFit);
-        
-//        leftDelayLabel.setBounds(topLabelBounds);
-//        rightDelayLabel.setBounds(bottomLabelBounds);
     }
     
     void valueUpdated(stm::ParameterAttachment* attachment, float newValue) override {
-        if (attachment == &crossFBAttachment) {
-            crossFB = newValue;
-        } else if (attachment == &directFBAttachment) {
-            directFB = newValue;
-        } else if (attachment == &delayAttachment) {
-            delay = newValue;
-        } else if (attachment == &offsetAttachment) {
-            offset = newValue;
-        } else if (attachment == &panAttachment) {
-            pan = newValue;
-        }
-        
         updateComponents();
     }
 
@@ -107,16 +91,7 @@ private:
     Rectangle<int> bounds, topLabelBounds, bottomLabelBounds;
     
     Colour crossFBColour = Colours::white, directFBColour = Colours::white, leftColour = Colours::white, rightColour = Colours::white;
-    float crossFB = 0.0f, directFB = 0.0f, delay = 0.0f, offset = 0.5f, pan = 0.5f;
     stm::ParameterAttachment crossFBAttachment, directFBAttachment, delayAttachment, offsetAttachment, panAttachment;
-    
-//    void initLabel(Label& label, String text) {
-//        addAndMakeVisible(label);
-//        //label.setText(text, dontSendNotification);
-//        label.setJustificationType(Justification::centred);
-//        label.setFont(Font(18.0f));
-//        //label.setColour(Label::backgroundColourId, Colours::black);
-//    }
     
     void updateBounds(){
         bounds = getLocalBounds();
@@ -151,10 +126,10 @@ private:
     
     void updateComponents(){
         //------     UPDATE LABELS     -----------
-        float leftDelay = delay;
-        float rightDelay = delay;
+        float leftDelay = delayAttachment.getValue();
+        float rightDelay = delayAttachment.getValue();
         
-        auto balance = stm::Balancer::getLinearCentered(offset);
+        auto balance = stm::Balancer::getLinearCentered(offsetAttachment.getValue());
         leftDelay *= 2.0f - balance.left;
         rightDelay *= 2.0f - balance.right;
         
@@ -173,15 +148,16 @@ private:
 //        rightDelayLabel.setText(String::toDecimalStringWithSignificantFigures (rightDelay, 2) + "ms", dontSendNotification);
         
         //-------     UPDATE SVGs     ------------
-        balance = stm::Balancer::getLinearCentered(pan);
-        crossFBsvg->replaceColour(crossFBColour, crossFBColour.withAlpha(crossFB));
-        crossFBColour = crossFBColour.withAlpha(crossFB);
-        directFBsvg->replaceColour(directFBColour, directFBColour.withAlpha(directFB));
-        directFBColour = directFBColour.withAlpha(directFB);
+        balance = stm::Balancer::getLinearCentered(panAttachment.getValue());
         leftsvg->replaceColour(leftColour, rightColour.withAlpha(balance.left));
         leftColour = rightColour.withAlpha(balance.left);
         rightsvg->replaceColour(rightColour, rightColour.withAlpha(balance.right));
         rightColour = rightColour.withAlpha(balance.right);
+        
+        crossFBsvg->replaceColour(crossFBColour, crossFBColour.withAlpha(crossFBAttachment.getValue()));
+        crossFBColour = crossFBColour.withAlpha(crossFBAttachment.getValue());
+        directFBsvg->replaceColour(directFBColour, directFBColour.withAlpha(directFBAttachment.getValue()));
+        directFBColour = directFBColour.withAlpha(directFBAttachment.getValue());
         
         //-------------
         repaint();

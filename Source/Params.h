@@ -58,8 +58,8 @@ public:
         auto modRateRange = NormalisableRange<float>(0.0f, 10.0f);
         modRateRange.setSkewForCentre(2.0f);
         
-        auto spreadRange = NormalisableRange<float>(0.0f, 300.0f);
-        spreadRange.setSkewForCentre(50.0f);
+        auto spreadRange = NormalisableRange<float>(0.0f, 100.0f);
+        spreadRange.setSkewForCentre(1.0f);
         
         params.push_back( std::make_unique<AudioParameterFloat>(idDry, "Dry Enabled", gainRange, 0.0f) );
         params.push_back( std::make_unique<AudioParameterFloat>(idWet, "Wet dB", gainRange, -6.0f) );
@@ -67,7 +67,7 @@ public:
         params.push_back( std::make_unique<AudioParameterFloat>(idDelay, "Delay", delayRange, 100.0f) );
         params.push_back( std::make_unique<AudioParameterFloat>(idPan, "Pan", 0.0f, 1.0f, 0.5f));
         params.push_back( std::make_unique<AudioParameterInt>(idTaps, "Taps", 1, MAX_TAPS, 1) );
-        params.push_back( std::make_unique<AudioParameterFloat>(idSpread, "Spread", spreadRange, 50.0f) );
+        params.push_back( std::make_unique<AudioParameterFloat>(idSpread, "Spread", spreadRange, 1.0f) );
         params.push_back( std::make_unique<AudioParameterFloat>(idOffsetLR, "L/R Offset", 0.0f, 1.0f, 0.5f ) );
         params.push_back( std::make_unique<AudioParameterBool>(idAllpass, "Allpass", false) );
         params.push_back( std::make_unique<AudioParameterFloat>(idFeedbackDirect, "Direct Feedback", 0.0f, 1.0f, 0.0f) );
