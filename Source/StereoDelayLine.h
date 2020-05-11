@@ -109,8 +109,8 @@ private:
         
         auto balance = stm::Balancer::getLinearCentered(offset);
         float maxOffsetSamples = Params::MAX_OFFSET * float(delaySamples);
-        offsetSamplesL = int(maxOffsetSamples * (1.0f - balance.left));
-        offsetSamplesR = int(maxOffsetSamples * (1.0f - balance.right));
+        offsetSamplesL = int(maxOffsetSamples * (1.0f - balance.right));
+        offsetSamplesR = int(maxOffsetSamples * (1.0f - balance.left));
         
         updateTaps();
     }

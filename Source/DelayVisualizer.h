@@ -130,8 +130,8 @@ private:
         float rightDelay = delayAttachment.getValue();
         
         auto balance = stm::Balancer::getLinearCentered(offsetAttachment.getValue());
-        leftDelay *= 2.0f - balance.left;
-        rightDelay *= 2.0f - balance.right;
+        leftDelay *= 2.0f - balance.right;
+        rightDelay *= 2.0f - balance.left;
         
 //        if ( offset < 0.5f ){
 //            float leftRatio = 1.0f - offset * 2.0f;
@@ -141,8 +141,8 @@ private:
 //            rightDelay *= (1.0f + rightRatio);
 //        }
         
-        leftDelayText = String::toDecimalStringWithSignificantFigures (leftDelay, 2) + "ms";
-        rightDelayText = String::toDecimalStringWithSignificantFigures (rightDelay, 2) + "ms";
+        leftDelayText = String::toDecimalStringWithSignificantFigures (leftDelay, 3) + "ms";
+        rightDelayText = String::toDecimalStringWithSignificantFigures (rightDelay, 3) + "ms";
         
 //        leftDelayLabel.setText(String::toDecimalStringWithSignificantFigures (leftDelay, 2) + "ms", dontSendNotification);
 //        rightDelayLabel.setText(String::toDecimalStringWithSignificantFigures (rightDelay, 2) + "ms", dontSendNotification);

@@ -32,18 +32,18 @@ public:
         titleLabel.setFont(Font(24.0f));
         
         initLabel(topLabel, topName);
-        topLabel.setJustificationType(Justification::centredLeft);
+        topLabel.setJustificationType(Justification::bottomLeft);
         
         initLabel(topValue, "");
         topValue.setFont(Font(16.0f));
-        topValue.setJustificationType(Justification::topLeft);
+        topValue.setJustificationType(Justification::bottomRight);
         
         initLabel(bottomLabel, bottomName);
-        bottomLabel.setJustificationType(Justification::centredRight);
+        bottomLabel.setJustificationType(Justification::bottomLeft);
         
         initLabel(bottomValue, "");
         bottomValue.setFont(Font(16.0f));
-        bottomValue.setJustificationType(Justification::topRight);
+        bottomValue.setJustificationType(Justification::bottomRight);
         
         topSlider.addListener(this);
         bottomSlider.addListener(this);
@@ -69,12 +69,12 @@ public:
         titleLabel.setBounds(bounds.removeFromTop(30));
         
         auto topBounds = bounds.removeFromTop(bounds.getHeight()/2);
-        topSlider.setBounds(topBounds.removeFromLeft(topBounds.getWidth()/2));
-        topLabel.setBounds(topBounds.removeFromTop(topBounds.getHeight()/2));
+        topSlider.setBounds(topBounds.removeFromBottom(topBounds.getHeight()/2));
+        topLabel.setBounds(topBounds.removeFromLeft(topBounds.getWidth()/2));
         topValue.setBounds(topBounds);
         
-        bottomSlider.setBounds(bounds.removeFromRight(bounds.getWidth()/2));
-        bottomLabel.setBounds(bounds.removeFromTop(bounds.getHeight()/2));
+        bottomSlider.setBounds(bounds.removeFromBottom(bounds.getHeight()/2));
+        bottomLabel.setBounds(bounds.removeFromLeft(bounds.getWidth()/2));
         bottomValue.setBounds(bounds);
     }
     
@@ -99,10 +99,11 @@ private:
     
     void initSlider(Slider& slider, String paramId, std::unique_ptr<SliderAttachment>& attachment) {
         addAndMakeVisible(slider);
-        slider.setSliderStyle(Slider::RotaryVerticalDrag);
+        slider.setSliderStyle(Slider::LinearHorizontal);
         slider.setTextBoxStyle(Slider::NoTextBox, true, 0, 0);
         attachment.reset(new SliderAttachment(state, paramId, slider));
     }
+    
     void initLabel(Label& label, String text) {
         addAndMakeVisible(label);
         label.setText(text, dontSendNotification);
@@ -110,8 +111,8 @@ private:
     }
     
     void setText(Label& label, float value) {
-        auto dbString = String::toDecimalStringWithSignificantFigures(value, 2);
-        label.setText(dbString, dontSendNotification);
+        auto valueString = stm::Balancer::toString(value);
+        label.setText(valueString, dontSendNotification);
     }
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SliderPair)

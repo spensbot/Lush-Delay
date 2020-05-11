@@ -14,6 +14,8 @@
 #include "KnobPair.h"
 #include "Params.h"
 #include "LushLookAndFeel.h"
+#include "SliderPair.h"
+#include "EqPair.h"
 
 //==============================================================================
 /*
@@ -73,7 +75,9 @@ public:
 private:
     AudioProcessorValueTreeState& state;
     
-    KnobPair stereoPair, eqPair, modulatePair, feedbackPair, diffusePair;
+    SliderPair stereoPair;
+    EqPair eqPair;
+    KnobPair modulatePair, feedbackPair, diffusePair;
     
     Slider delaySlider;
     Label delayLabel;

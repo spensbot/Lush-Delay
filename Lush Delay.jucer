@@ -19,10 +19,12 @@
     <FILE id="CK2q2j" name="DancingScript-Regular.ttf" compile="0" resource="1"
           file="Fonts/Dancing_Script/static/DancingScript-Regular.ttf"/>
     <GROUP id="{2B4E8FFD-DFCE-8FC2-A3CA-16EE9CB6C0AA}" name="GUI">
+      <FILE id="TRC5ut" name="ControlPair.h" compile="0" resource="0" file="Source/ControlPair.h"/>
       <FILE id="dFILSl" name="ControlPanel.h" compile="0" resource="0" file="Source/ControlPanel.h"/>
       <FILE id="bA79mS" name="DelayVisualizer.h" compile="0" resource="0"
             file="Source/DelayVisualizer.h"/>
       <FILE id="QuooAH" name="DryWetControl.h" compile="0" resource="0" file="Source/DryWetControl.h"/>
+      <FILE id="gqoqfM" name="EqPair.h" compile="0" resource="0" file="Source/EqPair.h"/>
       <FILE id="vGAXa1" name="HeaderPanel.h" compile="0" resource="0" file="Source/HeaderPanel.h"/>
       <FILE id="oWK0Av" name="KnobPair.h" compile="0" resource="0" file="Source/KnobPair.h"/>
       <FILE id="L16HoX" name="SliderPair.h" compile="0" resource="0" file="Source/SliderPair.h"/>
