@@ -30,6 +30,7 @@ public:
         addAndMakeVisible(dryWetControl);
         addAndMakeVisible(delayVisualizer);
         initLabel(titleLabel, "Lush Delay");
+        initSlider(allpassSlider, Params::idAllpass, allpassAttachment);
     }
 
     ~HeaderPanel()
@@ -50,6 +51,11 @@ public:
         
         bounds.removeFromBottom(30);
         delayVisualizer.setBounds(bounds.reduced(50, 0));
+        
+        bounds = getLocalBounds();
+        bounds.removeFromTop(getHeight()*2/3);
+        bounds.removeFromLeft(getWidth()*2/3);
+        //allpassSlider.setBounds(bounds);
     }
 
 private:
@@ -59,11 +65,22 @@ private:
     DryWetControl dryWetControl;
     Label titleLabel;
     
+    Slider allpassSlider;
+    typedef AudioProcessorValueTreeState::SliderAttachment SliderAttachment;
+    std::unique_ptr<SliderAttachment> allpassAttachment;
+    
     void initLabel(Label& label, String text) {
         addAndMakeVisible(label);
         label.setText(text, dontSendNotification);
         label.setJustificationType(Justification::centredLeft);
         label.setFont(Font("Dancing Script", 65.0f, Font::plain));
+    }
+    
+    void initSlider(Slider& slider, String paramId, std::unique_ptr<SliderAttachment>& attachment) {
+        addAndMakeVisible(slider);
+        slider.setSliderStyle(Slider::RotaryVerticalDrag);
+        slider.setTextBoxStyle(Slider::NoTextBox, true, 0, 0);
+        attachment.reset(new SliderAttachment(state, paramId, slider));
     }
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (HeaderPanel)

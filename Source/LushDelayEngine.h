@@ -39,7 +39,6 @@ public:
     }
     
     void process(AudioBuffer<float>& buffer) {
-        // Create a copy of the input block to use as the dry signal.
         auto outBlock = juce::dsp::AudioBlock<float> (buffer);
         
         //Lush is designed as a stereo delay and only processes 2 buffers.
@@ -73,6 +72,15 @@ public:
         }
     }
     
+    void analyzePosition(AudioPlayHead::CurrentPositionInfo& currentPositionInfo){
+        if (currentBPM != currentPositionInfo.bpm
+            || currentTimeSigDenominator != currentPositionInfo.timeSigDenominator)
+        {
+            // The DAW has changed the duration of a note.
+            // If "snap" is set, we need to update "delay".
+        }
+    }
+    
 private:
     AudioProcessorValueTreeState& state;
     stm::DryWetMix dryWetMix;
@@ -80,6 +88,9 @@ private:
     LushDelayLine delayLine;
     
     AudioSampleBuffer dryBuffer;
+    
+    double currentBPM;
+    int currentTimeSigDenominator;
     
     void updateParameters(){
         dryWetMix.setDryDecibels(*state.getRawParameterValue(Params::idDry));

@@ -35,10 +35,11 @@ public:
     inline static const String idAllpass = "allpass";
     inline static const String idFeedbackDirect = "feedbackDirect";
     inline static const String idFeedbackCross = "feedbackCross";
-    inline static const String idHighPass = "idHighPass";
-    inline static const String idLowPass = "idLowPass";
-    inline static const String idModDepth = "idModDepth";
-    inline static const String idModRate = "idModRate";
+    inline static const String idHighPass = "highPass";
+    inline static const String idLowPass = "lowPass";
+    inline static const String idModDepth = "modDepth";
+    inline static const String idModRate = "modRate";
+    inline static const String idSnap = "snap";
 
     static AudioProcessorValueTreeState::ParameterLayout createParameterLayout()
     {
@@ -69,13 +70,14 @@ public:
         params.push_back( std::make_unique<AudioParameterInt>(idTaps, "Taps", 1, MAX_TAPS, 1) );
         params.push_back( std::make_unique<AudioParameterFloat>(idSpread, "Spread", spreadRange, 1.0f) );
         params.push_back( std::make_unique<AudioParameterFloat>(idOffsetLR, "L/R Offset", 0.0f, 1.0f, 0.5f ) );
-        params.push_back( std::make_unique<AudioParameterBool>(idAllpass, "Allpass", false) );
+        params.push_back( std::make_unique<AudioParameterFloat>(idAllpass, "Allpass", 0.0f, 1.0f, 0.0f ) );
         params.push_back( std::make_unique<AudioParameterFloat>(idFeedbackDirect, "Direct Feedback", 0.0f, 1.0f, 0.0f) );
         params.push_back( std::make_unique<AudioParameterFloat>(idFeedbackCross, "Cross Feedback", 0.0f, 1.0f, 0.0f) );
         params.push_back( std::make_unique<AudioParameterFloat>(idHighPass, "High Pass Hz", frequencyRange, 20.0f) );
         params.push_back( std::make_unique<AudioParameterFloat>(idLowPass, "Low Pass Hz", frequencyRange, 20000.0f) );
         params.push_back( std::make_unique<AudioParameterFloat>(idModDepth, "Mod Depth", 0.0f, 1.0f, 0.0f) );
         params.push_back( std::make_unique<AudioParameterFloat>(idModRate, "Mod Rate (Hz)", modRateRange, 2.0f) );
+        params.push_back( std::make_unique<AudioParameterFloat>(idSnap, "Snap Note", 0.0f, 1.0f, 0.0f) );
         
         return { params.begin(), params.end() };
     }

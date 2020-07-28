@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="YrWzqh" name="Lush Delay" projectType="audioplug" jucerVersion="5.4.7"
-              cppLanguageStandard="17" version="0.5.0" companyName="Sailing To Mars"
-              pluginFormats="buildAU,buildVST3" pluginChannelConfigs="{2, 2}">
+<JUCERPROJECT id="YrWzqh" name="Lush Delay" projectType="audioplug" cppLanguageStandard="17"
+              version="0.5.0" companyName="Sailing To Mars" pluginFormats="buildAU,buildVST3"
+              pluginChannelConfigs="{1, 2}, {2, 2}" displaySplashScreen="1"
+              jucerFormatVersion="1">
   <MAINGROUP id="uynNn5" name="Lush Delay">
     <FILE id="wa8mPu" name="VisualizerCrossFB.svg" compile="0" resource="1"
           file="Graphics/svg/VisualizerCrossFB.svg"/>

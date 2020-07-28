@@ -16,7 +16,7 @@
 
 class LushDelayLine: public AudioProcessorValueTreeState::Listener {
 public:
-    LushDelayLine(AudioProcessorValueTreeState& s) : state(s)
+    LushDelayLine(AudioProcessorValueTreeState& s) : state(s), delayLine(s)
     {
         state.addParameterListener(Params::idModDepth, this);
         state.addParameterListener(Params::idModRate, this);

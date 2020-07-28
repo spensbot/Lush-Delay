@@ -12,12 +12,11 @@
 #include <JuceHeader.h>
 #include "Params.h"
 
-
 class StereoDelayLine
 {
 public:
-    StereoDelayLine() {
-        
+    StereoDelayLine(AudioProcessorValueTreeState& s) : state(s) {
+        allpass = state.getRawParameterValue(Params::idAllpass);
     }
     
     ~StereoDelayLine() {
@@ -37,25 +36,37 @@ public:
         
         for (auto sampleIndex = 0 ; sampleIndex < processBlock.getNumSamples() ; sampleIndex++)
         {
-            float sampleL = 0.0f;
-            float sampleR = 0.0f;
+            float inSampleL = processBlock.getSample(0, sampleIndex);
+            float inSampleR = processBlock.getSample(1, sampleIndex);
+            
+            float outSampleL = 0.0f;
+            float outSampleR = 0.0f;
+            
             float numTaps_f = (float)numTaps;
             for (auto i=0 ; i<numTaps ; i++){
                 int tapDelaySamples = taps[i];
                 int delaySamplesL = delaySamples + offsetSamplesL + tapDelaySamples;
                 int delaySamplesR = delaySamples + offsetSamplesR + tapDelaySamples;
-                sampleL += bufferL.getSample(delaySamplesL) / numTaps_f;
-                sampleR += bufferR.getSample(delaySamplesR) / numTaps_f;
+                outSampleL += bufferL.getSample(delaySamplesL) / numTaps_f;
+                outSampleR += bufferR.getSample(delaySamplesR) / numTaps_f;
             }
             
-            float feedbackL = sampleL * fbDirect + sampleR * fbCross;
-            float feedbackR = sampleR * fbDirect + sampleL * fbCross;
+            float feedforwardL = -inSampleL * fbDirect - inSampleR * fbCross;
+            float feedforwardR = -inSampleR * fbDirect - inSampleL * fbCross;
             
-            bufferL.push(processBlock.getSample(0, sampleIndex) + feedbackL );
-            bufferR.push(processBlock.getSample(1, sampleIndex) + feedbackR );
+            float ap = *allpass;
             
-            processBlock.setSample(0, sampleIndex, sampleL);
-            processBlock.setSample(1, sampleIndex, sampleR);
+            outSampleL += feedforwardL * ap;
+            outSampleR += feedforwardR * ap;
+            
+            float feedbackL = outSampleL * fbDirect + outSampleR * fbCross;
+            float feedbackR = outSampleR * fbDirect + outSampleL * fbCross;
+            
+            bufferL.push(inSampleL + feedbackL );
+            bufferR.push(inSampleR + feedbackR );
+            
+            processBlock.setSample(0, sampleIndex, outSampleL);
+            processBlock.setSample(1, sampleIndex, outSampleR);
             
             bufferL.increment();
             bufferR.increment();
@@ -88,6 +99,8 @@ public:
     void setFBcross(float fbc){fbCross = fbc;}
 
 private:
+    AudioProcessorValueTreeState& state;
+    
     float delay = 0.0f; //ms
     float offset = 0.0f; //percent delay
     float spread = 0.0f; //ms
@@ -99,6 +112,8 @@ private:
     int offsetSamplesL = 0;
     int offsetSamplesR = 0;
     int taps[Params::MAX_TAPS];
+    
+    std::atomic<float>* allpass;
     
     stm::RecircBuffer bufferL, bufferR;
     

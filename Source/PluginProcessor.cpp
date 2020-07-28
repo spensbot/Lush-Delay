@@ -101,9 +101,12 @@ void LushDelayAudioProcessor::changeProgramName (int index, const String& newNam
 //==============================================================================
 void LushDelayAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
-    auto totalNumInputChannels  = getTotalNumInputChannels();
+    auto numInputChannels  = getTotalNumInputChannels();
+    auto numOutputChannels = getTotalNumOutputChannels();
+    lushDelayEngine.prepare({ sampleRate, (uint32) samplesPerBlock, (uint32) numOutputChannels });
     
-    lushDelayEngine.prepare({ sampleRate, (uint32) samplesPerBlock, (uint32) totalNumInputChannels });
+    stm::DebugDisplay::set(10, "Inputs: " + String(numOutputChannels));
+    stm::DebugDisplay::set(11, "Outputs: " + String(numInputChannels));
 }
 
 void LushDelayAudioProcessor::releaseResources()
@@ -142,6 +145,7 @@ void LushDelayAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuff
     auto totalNumInputChannels  = getTotalNumInputChannels();
     auto totalNumOutputChannels = getTotalNumOutputChannels();
 
+
     // In case we have more outputs than inputs, this code clears any output
     // channels that didn't contain input data, (because these aren't
     // guaranteed to be empty - they may contain garbage).
@@ -150,6 +154,21 @@ void LushDelayAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuff
     // this code if your algorithm always overwrites all the output channels.
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
+    
+    // Send the playhead to the audio engine.
+    // This allows the engine to check if bpm or timeSigDenominator has changed.
+    getPlayHead()->getCurrentPosition(currentPositionInfo);
+    lushDelayEngine.analyzePosition(currentPositionInfo);
+    
+    //Lush only supports stereo out
+    jassert(totalNumOutputChannels == 2);
+    //Lush supports mono or stereo input
+    jassert(totalNumInputChannels < 3);
+    
+    if (totalNumInputChannels == 1) {
+        // For mono input, we copy channel 0 across both outputs
+        //buffer.copyFrom(1, 0, buffer.getReadPointer(0), buffer.getNumSamples());
+    }
 
     lushDelayEngine.process(buffer);
 }

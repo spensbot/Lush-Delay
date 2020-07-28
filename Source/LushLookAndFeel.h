@@ -23,7 +23,6 @@ public:
         dancingScript = Typeface::createSystemTypefaceFor(BinaryData::DancingScriptRegular_ttf, BinaryData::DancingScriptRegular_ttfSize);
 
         LookAndFeel::getDefaultLookAndFeel().setDefaultSansSerifTypeface(montserrat);
-        
     }
     
     void drawRotarySlider (Graphics& g, int x, int y, int width, int height, float sliderPos, const float rotaryStartAngle, const float rotaryEndAngle, Slider& slider) override
